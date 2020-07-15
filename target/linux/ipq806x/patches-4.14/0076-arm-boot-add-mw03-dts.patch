@@ -1,0 +1,10 @@
+--- a/arch/arm/boot/dts/Makefile	2020-07-14 13:52:55.403318075 -0700
++++ b/arch/arm/boot/dts/Makefile	2020-07-14 13:53:09.815317832 -0700
+@@ -703,6 +703,7 @@
+ 	qcom-ipq8064-d7800.dtb \
+ 	qcom-ipq8064-db149.dtb \
+ 	qcom-ipq8064-ap161.dtb \
++	qcom-ipq8064-mw03.dtb \
+ 	qcom-ipq8064-ea8500.dtb \
+ 	qcom-ipq8064-r7500.dtb \
+ 	qcom-ipq8064-r7500v2.dtb \

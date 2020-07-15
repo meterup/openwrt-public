@@ -234,6 +234,19 @@ define Device/qcom_ipq8064-ap161
 endef
 TARGET_DEVICES += qcom_ipq8064-ap161
 
+define Device/meter_mw03
+	$(call Device/FitImage)
+	$(call Device/UbiFit)
+	DEVICE_DTS := qcom-ipq8064-mw03
+	KERNEL_INSTALL := 1
+	BLOCKSIZE := 128k
+	PAGESIZE := 2048
+	BOARD_NAME := mw03
+	DEVICE_TITLE := Meter mw03
+	DEVICE_PACKAGES := ath10k-firmware-qca99x0-ct
+endef
+TARGET_DEVICES += meter_mw03
+
 define Device/qcom_ipq8064-db149
 	$(call Device/FitImage)
 	DEVICE_DTS := qcom-ipq8064-db149

@@ -5,7 +5,7 @@
 	compatible = "meter,mw03", "qcom,ipq8064-ap161", "qcom,ipq8064";
 
 	memory@0 {
-		reg = <0x42000000 0x1e000000>;
+		reg = <0x42000000 0x10000000>;
 		device_type = "memory";
 	};
 
@@ -20,8 +20,11 @@
 	};
 
 	aliases {
-		serial0 = &gsbi4_serial;
+		serial0 = &uart7;
+		serial1 = &uart6b;
 		mdio-gpio0 = &mdio0;
+		ethernet0 = &gmac0;
+		ethernet1 = &gmac2;
 	};
 
 	chosen {
@@ -42,6 +45,10 @@
 					function = "gsbi5";
 					drive-strength = <10>;
 					bias-none;
+				};
+				cs {
+					pins = "gpio20";
+					drive-strength = <12>;
 				};
 			};
 			nand_pins: nand_pins {
@@ -88,12 +95,31 @@
 					bias-disable;
 				};
 			};
+			gsbi6_uart_2pins: gsbi6_uart_2pins {
+				mux {
+					pins = "gpio55", "gpio56";
+					function = "gsbi6";
+					drive-strength = <12>;
+					bias-disable;
+				};
+			};
+			leds_pins: leds_pins {
+				mux {
+					pins = "gpio22", "gpio23", "gpio24",
+							"gpio25", "gpio26", "gpio27",
+							"gpio30", "gpio51", "gpio65";
+					function = "gpio";
+					drive-strength = <2>;
+					bias-pull-up;
+					output-high;
+				};
+			};
 		};
 
-		gsbi@16300000 {
+		gsbi@16600000 {  /* GSBI7 */
 			qcom,mode = <GSBI_PROT_I2C_UART>;
 			status = "ok";
-			serial@16340000 {
+			uart7: serial@16640000 {
 				status = "ok";
 			};
 
@@ -118,6 +144,10 @@
 
 				cs-gpios = <&qcom_pinmux 20 0>;
 
+				dmas = <&adm_dma 6 9>,
+					<&adm_dma 5 10>;
+				dma-names = "rx", "tx";
+
 				flash: m25p80@0 {
 					compatible = "s25fl256s1";
 					#address-cells = <1>;
@@ -129,6 +159,16 @@
 						compatible = "qcom,smem";
 					};
 				};
+			};
+		};
+
+		gsbi6: gsbi@16500000 {
+			qcom,mode = <GSBI_PROT_I2C_UART>;
+			status = "ok";
+			uart6b: serial@16540000 {
+				pinctrl-0 = <&gsbi6_uart_2pins>;
+				pinctrl-names = "default";
+				status = "ok";
 			};
 		};
 
@@ -164,17 +204,94 @@
 			status = "ok";
 		};
 
+		leds {
+			compatible = "gpio-leds";
+			pinctrl-0 = <&leds_pins>;
+			pinctrl-names = "default";
+
+			led@23 {
+				label = "LAN";
+				gpios = <&qcom_pinmux 23 GPIO_ACTIVE_LOW>;
+				default-state = "on";
+			};
+			led@24 {
+				label = "2G";
+				gpios = <&qcom_pinmux 24 GPIO_ACTIVE_LOW>;
+				default-state = "on";
+			};
+			led@25 {
+				label = "5G";
+				gpios = <&qcom_pinmux 25 GPIO_ACTIVE_LOW>;
+				default-state = "on";
+			};
+			led@26 {
+				label = "PWR";
+				gpios = <&qcom_pinmux 26 GPIO_ACTIVE_LOW>;
+				default-state = "on";
+			};
+			led@27 {
+				label = "LED_LAN2_1";
+				gpios = <&qcom_pinmux 27 GPIO_ACTIVE_LOW>;
+				default-state = "on";
+			};
+
+			led@30 {
+				label = "BT_LOADER";
+				gpios = <&qcom_pinmux 30 GPIO_ACTIVE_HIGH>;
+				default-state = "off";
+			};
+			led@51 {
+				label = "QCA8334_RESET";
+				gpios = <&qcom_pinmux 51 GPIO_ACTIVE_HIGH>;
+				default-state = "off";
+			};
+			led@65 {
+				label = "BT_RESET";
+				gpios = <&qcom_pinmux 65 GPIO_ACTIVE_LOW>;
+				default-state = "off";
+			};
+		};
+
 		pcie0: pci@1b500000 {
 			status = "ok";
+			pcie@0 {
+				reg = <0 0 0 0 0>;
+				#interrupt-cells = <1>;
+				#size-cells = <2>;
+				#address-cells = <3>;
+				device_type = "pci";
+
+				ath10k@0,0 {
+					reg = <0 0 0 0 0>;
+					device_type = "pci";
+					qcom,mtd-name = "0:ART";
+					qcom,cal-offset = <0x1000>;
+					qcom,cal-len = <12064>;
+				};
+			};
 		};
 
 		pcie1: pci@1b700000 {
 			status = "ok";
 			force_gen1 = <1>;
+				ath10k@0,0 {
+					reg = <0 0 0 0 0>;
+					device_type = "pci";
+					qcom,mtd-name = "0:ART";
+					qcom,cal-offset = <0x5000>;
+					qcom,cal-len = <12064>;
+				};
 		};
 
 		pcie2: pci@1b900000 {
 			status = "ok";
+				ath10k@0,0 {
+					reg = <0 0 0 0 0>;
+					device_type = "pci";
+					qcom,mtd-name = "0:ART";
+					qcom,cal-offset = <0x9000>;
+					qcom,cal-len = <2116>;
+				};
 		};
 
 		nand@1ac00000 {
@@ -218,16 +335,17 @@
 					>;
 			};
 
-			phy4: ethernet-phy@4 {
-				reg = <4>;
+			ethernet-phy@2 {
+				device_type = "ethernet-phy";
+				reg = <2>;
 				qca,phy-rgmii-en;
 				qca,txclk-delay-en;
 				qca,rxclk-delay-en;
 			};
 
-			phy3: ethernet-phy@3 {
+			ethernet-phy@1 {
 				device_type = "ethernet-phy";
-				reg = <3>;
+				reg = <1>;
 			};
 		};
 
@@ -238,18 +356,6 @@
 
 			pinctrl-0 = <&rgmii2_pins>;
 			pinctrl-names = "default";
-			mdiobus = <&mdio0>;
-
-			fixed-link {
-				speed = <1000>;
-				full-duplex;
-			};
-		};
-
-		gmac1: ethernet@37200000 {
-			status = "ok";
-			phy-mode = "rgmii";
-			qcom,id = <1>;
 			mdiobus = <&mdio0>;
 
 			fixed-link {

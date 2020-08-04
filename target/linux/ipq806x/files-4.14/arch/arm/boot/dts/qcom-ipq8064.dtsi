@@ -859,7 +859,7 @@
 
 			syscon-tcsr = <&tcsr>;
 
-			serial@16540000 {
+			gsbi6_serial: serial@16540000 {
 				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
 				reg = <0x16540000 0x1000>,
 					<0x16500000 0x1000>;
@@ -907,7 +907,7 @@
 
 			syscon-tcsr = <&tcsr>;
 
-			serial@16640000 {
+			gsbi7_serial: serial@16640000 {
 				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
 				reg = <0x16640000 0x1000>,
 				      <0x16600000 0x1000>;

@@ -5,7 +5,7 @@
 	compatible = "meter,mw03", "qcom,ipq8064-ap161", "qcom,ipq8064";
 
 	memory@0 {
-		reg = <0x42000000 0x0e000000>;
+		reg = <0x40000000 0x10000000>;
 		device_type = "memory";
 	};
 
@@ -29,8 +29,6 @@
 
 	chosen {
 		linux,stdout-path = "serial0:115200n8";
-		bootargs-append = "console=ttyS1,115200n8 console=ttyS0,115200n8 console=ttyMSM1,115200n8 console=ttyMSM0,115200n8";
-		bootargs = "console=ttyHSL1,115200n8 ubi.mtd=rootfs root=mtd:ubi_rootfs rootfstype=squashfs";
 	};
 
 	soc {
@@ -159,7 +157,7 @@
 			};
 		};
 
-		gsbi7@16600000 {
+		gsbi7: gsbi@16600000 {
 			qcom,mode = <GSBI_PROT_I2C_UART>;
 			status = "ok";
 			uart7: serial@16640000 {

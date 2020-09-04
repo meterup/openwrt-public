@@ -908,6 +908,16 @@
 			syscon-tcsr = <&tcsr>;
 
 			gsbi7_serial: serial@16640000 {
+				compatible = "qcom,msm-uart";
+				reg = <0x16640000 0x1000>;
+				interrupts = <158>;
+				clocks = <&gcc GSBI7_UART_CLK>;
+				clock-names = "core";
+				status = "disabled";
+			};
+
+/*
+			gsbi7_serial: serial@16640000 {
 				compatible = "qcom,msm-uartdm-v1.3", "qcom,msm-uartdm";
 				reg = <0x16640000 0x1000>,
 				      <0x16600000 0x1000>;
@@ -916,7 +926,7 @@
 				clock-names = "core", "iface";
 				status = "disabled";
 			};
-
+*/
 			i2c@16680000 {
 				compatible = "qcom,i2c-qup-v1.1.1";
 				reg = <0x16680000 0x1000>;

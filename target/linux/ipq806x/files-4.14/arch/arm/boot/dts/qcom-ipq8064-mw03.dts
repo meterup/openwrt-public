@@ -21,7 +21,6 @@
 
 	aliases {
 		serial0 = &uart7;
-		serial1 = &uart6b;
 		mdio-gpio0 = &mdio0;
 		ethernet0 = &gmac0;
 		ethernet1 = &gmac2;
@@ -33,12 +32,6 @@
 
 	soc {
 		pinmux@800000 {
-			i2c4_pins: i2c4_pinmux {
-				pins = "gpio12", "gpio13";
-				function = "gsbi4";
-				bias-disable;
-			};
-
 			spi_pins: spi_pins {
 				mux {
 					pins = "gpio18", "gpio19", "gpio21";
@@ -144,16 +137,6 @@
 						compatible = "qcom,smem";
 					};
 				};
-			};
-		};
-
-		gsbi6: gsbi@16500000 {
-			qcom,mode = <GSBI_PROT_I2C_UART>;
-			status = "ok";
-			uart6b: serial@16540000 {
-				pinctrl-0 = <&gsbi6_uart_2pins>;
-				pinctrl-names = "default";
-				status = "ok";
 			};
 		};
 
